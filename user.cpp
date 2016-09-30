@@ -37,6 +37,8 @@ void User::disconnect()
     __print;
     // TODO: some interface
     udpSocket->close();
+    delete udpSocket;
+    udpSocket = NULL;
 
     connected = false;
 }
@@ -59,9 +61,9 @@ QString User::getName() const
     return userName;
 }
 
-QString User::getIP() const
+QHostAddress User::getIP() const
 {
-    return userAddress.toString();
+    return userAddress;
 }
 
 QTime User::getTime() const
@@ -77,4 +79,9 @@ uint User::getPort() const
 uint User::getId() const
 {
     return userId;
+}
+
+void User::setTime(QTime time)
+{
+    timeOfLastMsg = time;
 }

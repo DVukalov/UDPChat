@@ -1,23 +1,24 @@
-#ifndef DIALOG_H
-#define DIALOG_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #pragma once
 
 #include <QList>
 #include <QTimer>
 #include <QLabel>
-#include <QDialog>
+#include <QWidget>
 #include <QUdpSocket>
+#include <QListWidget>
+#include <QPushButton>
 #include <QHostAddress>
 
 #include "user.h"
 
-namespace Ui
-{
-    class Dialog;
+namespace Ui {
+class Server;
 }
 
-class Server : public QDialog
+class Server : public QWidget
 {
     Q_OBJECT
 
@@ -27,24 +28,36 @@ public:
 
     void createUser(QHostAddress address, uint port,
                     uint id, QString name);
-    void checkUser(int num);
+
+signals:
+    void userListChanged();
 
 private slots:
+    void start();
+    void showUsers();
+    void pingUsers();
+    void checkUsers();
     void initServer();
+    void closeServer();
     void startReading();
     bool parseMessage(QByteArray message,
-                      QHostAddress address,
-                      quint16 port);
+                      QHostAddress address);
 
 private:
-    Ui::Dialog *ui;
+    Ui::Server *ui;
 
-    QLabel *info;
+    QLabel *infoL;
+    QLabel *pathL;
+    QLabel *usersL;
+    QPushButton *quitBut;
+    QPushButton *startBut;
+    QListWidget *listOfUsersLW;
 
-    QTimer *timer;
+    QTimer *pingTimer;
+    QTimer *silenceTimer;
     QUdpSocket *inSocket;
     QUdpSocket *outSocket;
     QList<User> usersList;
 };
 
-#endif // DIALOG_H
+#endif // SERVER_H

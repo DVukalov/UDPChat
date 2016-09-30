@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network widgets
 
 DEFINES += __print="\"qDebug()<< __FILE__ << __LINE__ <<  Q_FUNC_INFO\""
 
@@ -22,4 +22,5 @@ HEADERS  += \
     user.h \
     server.h
 
-FORMS    += dialog.ui
+FORMS    += \
+    server.ui

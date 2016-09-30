@@ -19,12 +19,13 @@ public:
     ~User();
 
     void connect();
-    void disconnect();    
+    void disconnect();
+    void setTime(QTime time);
     bool sendMessage(QByteArray message);
 
     bool isConnected() const;
     QString getName() const;
-    QString getIP() const;
+    QHostAddress getIP() const;
     QTime getTime() const;
     uint getPort() const;
     uint getId() const;
