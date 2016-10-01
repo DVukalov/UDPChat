@@ -10,7 +10,7 @@
 namespace
 {
     // Time for user's reaction (secs)
-    const uint waitUser = 180;
+    const uint waitUser = 20;
     // Time for ping user (secs)
     const uint pingTime = 30;
     // Server's port
@@ -18,7 +18,7 @@ namespace
     // Server's address
     QHostAddress serverAddress = QHostAddress("192.168.0.1");
     // ID for users
-    uint userId = 1;
+    uint userId = 0;
     // Regular expressions for messages
     const QByteArray serverInit = "INITSERVER";
     const QByteArray userInit = "INITUSER";
@@ -37,6 +37,7 @@ Server::Server(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Server)
 {
+    __print;
     // network elements
     ui->setupUi(this);
     inSocket = new QUdpSocket(this);
@@ -142,21 +143,24 @@ void Server::checkUsers()
 
         // If his time has not yet expired,
         // let's give him a chance
-        if(usersList.at(num).getTime().addSecs(::waitUser) <
+        if(usersList.at(num).getTime().addSecs(::waitUser) >
                 QTime::currentTime())
         {
             return;
         }
 
-        // TODO: some manipulations
+        infoL->setText(infoL->text() +
+                       QString("\nUser named %1 disconnected")
+                       .arg(usersList.at(num).getName()));
+
         usersList[num].disconnect();
 
         emit userListChanged();
     }
 }
 
-void Server::createUser(QHostAddress address, uint port,
-                        uint id, QString name)
+void Server::createUser(QHostAddress address,
+                        uint port, QString name)
 {
     __print;
 
@@ -175,8 +179,24 @@ void Server::createUser(QHostAddress address, uint port,
         }
     }
 
-    usersList.append(User(id, address, port, name));
+    User *newUser = new User(userId, address, port, name);
+
+    usersList.append(static_cast<const User>(*newUser));
     usersList[usersList.size()-1].connect();
+
+    QByteArray initDatagram = ::userInit;
+
+    outSocket->writeDatagram(initDatagram.data(),
+                             initDatagram.size(),
+                             usersList.at(userId).getIP(),
+                             usersList.at(userId).getPort());
+
+    infoL->setText(infoL->text() +
+                   QString("\nWelcome user %1 !")
+                   .arg(usersList.at(userId).getName()));
+    userId++;
+    delete newUser;
+    newUser = NULL;
 }
 
 void Server::startReading()
@@ -254,9 +274,7 @@ bool Server::parseMessage(QByteArray message,
         port = atoi(buf.data());
 
         createUser(QHostAddress(address.toString().remove(0,7)),
-                   port, ::userId, name);
-
-        ::userId++;
+                   port, name);
 
         emit userListChanged();
 
@@ -284,6 +302,18 @@ bool Server::parseMessage(QByteArray message,
         qCopy(message.begin() + indexB + ::separator.size(),
               message.begin() + indexE, buf.begin());
         name = QString(buf.data());
+
+        for(int i = 0; i < usersList.size(); i++)
+        {
+            if(usersList.at(i).getName() == name)
+            {
+                if(!usersList.at(i).isConnected())
+                {
+                    usersList[i].connect();
+                    emit userListChanged();
+                }
+            }
+        }
 
         for(int i = 0; i < usersList.size(); i++)
         {
@@ -347,4 +377,3 @@ void Server::closeServer()
     }
     this->close();
 }
-

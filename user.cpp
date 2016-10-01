@@ -10,7 +10,6 @@ User::User(uint id,
     userPort(port),
     userName(name)
 {
-    timer = NULL;
     __print  << this->userId
              << this->userAddress.toString()
              << this->userPort
@@ -20,35 +19,19 @@ User::User(uint id,
 User::~User()
 {
     __print;
-    delete timer;
 }
 
 void User::connect()
 {
     __print;
-    // TODO: some interface
-    udpSocket = new QUdpSocket();
-
     connected = true;
+    timeOfLastMsg = QTime::currentTime();
 }
 
 void User::disconnect()
 {
     __print;
-    // TODO: some interface
-    udpSocket->close();
-    delete udpSocket;
-    udpSocket = NULL;
-
     connected = false;
-}
-
-bool User::sendMessage(QByteArray message)
-{
-    __print << message.data();
-    udpSocket->writeDatagram(message.data(), message.size(),
-                             userAddress, userPort);
-    return true;
 }
 
 bool User::isConnected() const

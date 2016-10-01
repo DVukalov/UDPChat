@@ -26,8 +26,8 @@ public:
     explicit Server(QWidget *parent = 0);
     ~Server();
 
-    void createUser(QHostAddress address, uint port,
-                    uint id, QString name);
+    void createUser(QHostAddress address,
+                    uint port, QString name);
 
 signals:
     void userListChanged();

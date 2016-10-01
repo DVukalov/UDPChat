@@ -21,7 +21,6 @@ public:
     void connect();
     void disconnect();
     void setTime(QTime time);
-    bool sendMessage(QByteArray message);
 
     bool isConnected() const;
     QString getName() const;
@@ -35,9 +34,7 @@ private:
     QHostAddress userAddress;
     uint userPort;
     QString userName;
-    QUdpSocket* udpSocket;
     QString message;
-    QTimer *timer;
     QTime timeOfLastMsg;
     bool connected;
 };

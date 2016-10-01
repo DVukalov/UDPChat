@@ -1,5 +1,6 @@
 #include "server.h"
 #include <QApplication>
+#include <wwWidgets/QwwListWidget>
 
 int main(int argc, char *argv[])
 {
