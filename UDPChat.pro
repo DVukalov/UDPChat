@@ -24,5 +24,3 @@ HEADERS  += \
 
 FORMS    += \
     server.ui
-
-LIBS += -lwwwidgets4
