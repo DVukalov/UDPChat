@@ -58,7 +58,7 @@ Server::Server(QWidget *parent) :
     connect(this, SIGNAL(userListChanged()), this, SLOT(showUsers()));
     pathL = new QLabel("Server host: 255.255.255.255\nServer port: 00000", this);
     usersL = new QLabel("List of users", this);
-    infoL = new QLabel("Some info", this);
+    infoL = new QLabel("", this);
     infoL->setFont(QFont("Courier", 12));
     pathL->setFont(QFont("Courier", 12));
     usersL->setFont(QFont("Courier", 12));
@@ -226,7 +226,7 @@ bool Server::parseMessage(QByteArray message,
 
         __print << ::serverAddress.toString()
                 << ::serverPort;
-
+        infoL->setText(tr("Server works correctly"));
         pathL->setText(tr("Server host: %1").
                       arg(::serverAddress.toString())
                       + tr("\nServer port: %1").
