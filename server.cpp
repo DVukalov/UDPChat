@@ -67,6 +67,7 @@ Server::Server(QWidget *parent) :
     usersL->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     pathL->setFixedSize(300, 40);
     usersL->setFixedHeight(20);
+    infoL->setFixedHeight(400);
 
     // checkers
     silenceTimer = new QTimer(this);
@@ -91,7 +92,7 @@ Server::Server(QWidget *parent) :
     mainLayout->addLayout(labLayout);
     mainLayout->addLayout(userLayout);
     this->setLayout(mainLayout);
-
+    this->setFixedSize(500,530);
     setWindowTitle(tr("UDP server"));
 
     __print << "start!";
